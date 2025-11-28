@@ -4,6 +4,7 @@ import com.amalitech.bankmanagement.main.domain.*;
 import com.amalitech.bankmanagement.main.manager.AccountManager;
 import com.amalitech.bankmanagement.main.manager.TransactionManager;
 import com.amalitech.bankmanagement.main.service.BankingService;
+import com.amalitech.bankmanagement.main.util.DataSeeder;
 import com.amalitech.bankmanagement.main.util.DisplayUtil;
 
 import java.util.Scanner;
@@ -12,32 +13,42 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         BankingService bankingService = new BankingService(new AccountManager(), new TransactionManager());
+
+        // Populate the program with already existing customer accounts
+        // defined within seed method
+        DataSeeder seeder = new DataSeeder(bankingService);
+        seeder.seed();
+
         boolean userIsActive = true;
 
         while(userIsActive) {
-            DisplayUtil.displayMainMenu();
+            try {
+                DisplayUtil.displayMainMenu();
 
-            int userSelection = readInt(scanner, "Select an option (1-5)", 1, 5);
-            System.out.println();
+                int userSelection = readInt(scanner, "Select an option (1-5)", 1, 5);
+                System.out.println();
 
-            switch(userSelection) {
-                case 1:
-                    handleAccountCreationFlow(scanner, bankingService);
-                    break;
-                case 2:
-                    handleAccountListingFlow(scanner, bankingService);
-                    break;
-                case 3:
-                    handleTransactionFlow(scanner, bankingService);
-                    break;
-                case 4:
-                    handleTransactionListingFlow(scanner, bankingService);
-                    break;
-                case 5:
-                    userIsActive = false;
-                    break;
-                default:
-                    DisplayUtil.displayNotice("Wrong number selection");
+                switch(userSelection) {
+                    case 1:
+                        handleAccountCreationFlow(scanner, bankingService);
+                        break;
+                    case 2:
+                        handleAccountListingFlow(scanner, bankingService);
+                        break;
+                    case 3:
+                        handleTransactionFlow(scanner, bankingService);
+                        break;
+                    case 4:
+                        handleTransactionListingFlow(scanner, bankingService);
+                        break;
+                    case 5:
+                        userIsActive = false;
+                        break;
+                    default:
+                        DisplayUtil.displayNotice("Wrong number selection");
+                }
+            } catch (Exception e) {
+                DisplayUtil.displayNotice(e.getMessage());
             }
         }
     }
@@ -281,11 +292,10 @@ public class Main {
         double totalWithdrawals = service.getTotalWithdrawals(accountNumber);
 
         double netChange = totalDeposits - totalWithdrawals;
-        char netChangeSign = netChange >= 0 ? '+' : '-';
 
         System.out.println("Total Transactions: " + transactions.length);
         System.out.println("Total Deposits: " + DisplayUtil.displayAmount(totalDeposits));
         System.out.println("Total Withdrawals: " + DisplayUtil.displayAmount(totalWithdrawals));
-        System.out.println("Net Change: " + netChangeSign + DisplayUtil.displayAmount(netChange));
+        System.out.println("Net Change: " + DisplayUtil.displayAmount(netChange));
     }
 }
