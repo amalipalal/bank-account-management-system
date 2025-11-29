@@ -29,12 +29,15 @@ public class BankingService {
     }
 
     public boolean confirmTransaction(Account account, Transaction transaction) {
-        transactionManager.addTransaction(transaction);
         if ("withdraw".equals(transaction.getTransactionType())) {
             account.withdraw(transaction.getAmount());
         } else {
             account.deposit(transaction.getAmount());
         }
+
+        // Record the transaction only after successful account update
+        transactionManager.addTransaction(transaction);
+
         return true;
     }
 
