@@ -1,5 +1,5 @@
+import handlers.AccountFlowHandler;
 import models.*;
-import config.AppConfig;
 import services.AccountManager;
 import services.TransactionManager;
 import services.BankingService;
@@ -11,9 +11,9 @@ import utils.ValidationUtil;
 import java.util.Scanner;
 
 public class TerminalApplication {
-    private static final Scanner SCANNER = new Scanner(System.in);
     private static final BankingService BANKING_SERVICE = new BankingService(new AccountManager(), new TransactionManager());
     private static final InputReader INPUT = new InputReader(new Scanner(System.in));
+    private static final AccountFlowHandler ACCOUNT_FLOW = new AccountFlowHandler(BANKING_SERVICE, INPUT);
 
     public static void start() {
         // Populate the program with already existing customer accounts
@@ -32,10 +32,10 @@ public class TerminalApplication {
 
                 switch(userSelection) {
                     case 1:
-                        handleAccountCreationFlow();
+                        ACCOUNT_FLOW.handleAccountCreationFlow();
                         break;
                     case 2:
-                        handleAccountListingFlow();
+                        ACCOUNT_FLOW.handleAccountListingFlow();
                         break;
                     case 3:
                         handleTransactionFlow();
@@ -53,118 +53,6 @@ public class TerminalApplication {
                 DisplayUtil.displayNotice(e.getMessage());
             }
         }
-    }
-
-    public static void handleAccountCreationFlow() {
-        DisplayUtil.displayHeading("Account Creation");
-
-        Customer newCustomer = createCustomerFlow();
-
-        System.out.println();
-        System.out.println("Account type:");
-        System.out.println("1. Savings Account (Interest: 3.5%, Min Balance: $500)");
-        System.out.println("2. Checking Account (Overdraft: $1,000, Monthly Fee: $10)");
-        System.out.println();
-
-        Account newAccount = createAccountFlow(newCustomer);
-
-        System.out.println();
-
-        showUserAccount(newAccount);
-
-        System.out.println();
-    }
-
-    private static Customer createCustomerFlow() {
-        String customerName = INPUT.readNonEmptyString(
-                "Enter customer name", ValidationUtil::validateName);
-
-        int customerAge = INPUT.readInt("Enter customer age", 1, 120);
-
-        String customerContact = INPUT.readNonEmptyString(
-                "Enter customer contact", ValidationUtil::validatePhoneNumber);
-
-        String customerAddress = INPUT.readNonEmptyString(
-                "Enter customer address", ValidationUtil::validateAddress);
-
-        System.out.println();
-        System.out.println("Customer type:");
-        System.out.println("1. Regular Customer (Standard banking services)");
-        System.out.println("2. Premium Customer (Enhanced benefits, min balance $10,000)");
-        System.out.println();
-
-        int customerType = INPUT.readInt("Select type (1-2)", 1, 2);
-
-        return customerType == 1
-                ? new RegularCustomer(customerName, customerAge, customerContact, customerAddress)
-                : new PremiumCustomer(customerName, customerAge, customerContact, customerAddress);
-    }
-
-    private static Account createAccountFlow(Customer customer) {
-        int accountType = INPUT.readInt("Select type (1-2)", 1, 2);
-
-        double initialDeposit = getInitialDeposit(customer, accountType);
-
-        Account newAccount = switch (accountType) {
-            case 1 -> BANKING_SERVICE.createSavingsAccount(customer);
-            case 2 -> BANKING_SERVICE.createCheckingAccount(customer);
-            default -> throw new IllegalArgumentException("Invalid account type");
-        };
-
-        // record initial deposit as a transaction for audit
-        Transaction firstTransaction = BANKING_SERVICE.processDeposit(newAccount, initialDeposit);
-        BANKING_SERVICE.confirmTransaction(newAccount, firstTransaction);
-
-        return newAccount;
-    }
-
-    /// Retrieve the initial allowed deposit for an account
-    /// initial deposit > minimum deposit amount
-    private static double getInitialDeposit(Customer customer, int accountType) {
-        double initialDeposit;
-        double minimumDeposit = getMinimumDeposit(customer, accountType);
-
-        do {
-            initialDeposit = INPUT.readDouble("Enter initial deposit amount (minimum GHS " + minimumDeposit + ")", 0);
-            if (initialDeposit < minimumDeposit) {
-                System.out.println("Initial deposit must be at least $ " + minimumDeposit);
-            }
-        } while (initialDeposit < minimumDeposit);
-
-        return initialDeposit;
-    }
-
-    private static double getMinimumDeposit(Customer customer, int accountType) {
-        if ("Premium".equals(customer.getCustomerType())) {
-            return AppConfig.MINIMUM_INITIAL_DEPOSIT_PREMIUM;
-        }
-        return (accountType == 1)
-                ? AppConfig.MINIMUM_INITIAL_DEPOSIT_SAVINGS
-                : AppConfig.MINIMUM_INITIAL_DEPOSIT_CHECKING;
-    }
-
-    private static void showUserAccount(Account account) {
-        System.out.println("Account Created successfully!");
-        if(account instanceof SavingsAccount) {
-            DisplayUtil.displayNewSavingsAccount((SavingsAccount) account);
-        } else if (account instanceof CheckingAccount) {
-            DisplayUtil.displayNewCheckingAccount((CheckingAccount) account);
-        }
-    }
-
-    public static void handleAccountListingFlow() {
-        System.out.println("ACCOUNT LISTING");
-
-        Account[] allAccounts = BANKING_SERVICE.viewAllAccounts();
-        double totalBalance = BANKING_SERVICE.getTotalBankBalance();
-
-        DisplayUtil.displayAccountListing(allAccounts);
-
-        System.out.println();
-
-        System.out.println("Total Accounts: " + allAccounts.length);
-        System.out.println("Total Bank Balance: " + DisplayUtil.displayAmount(totalBalance));
-        System.out.println();
     }
 
     public static void handleTransactionFlow() {
