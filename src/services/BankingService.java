@@ -6,6 +6,9 @@ import models.CheckingAccount;
 import models.PremiumCustomer;
 import models.SavingsAccount;
 import models.Transaction;
+import models.exceptions.InsufficientFundsException;
+import models.exceptions.OverdraftExceededException;
+import services.exceptions.AccountNotFoundException;
 
 public class BankingService {
     private final AccountManager accountManager;
@@ -27,7 +30,8 @@ public class BankingService {
     }
 
     ///  Updates the bank account balance and adds transaction to transaction store
-    public boolean confirmTransaction(Account account, Transaction transaction) {
+    public void confirmTransaction(Account account, Transaction transaction) throws OverdraftExceededException,
+            InsufficientFundsException {
         if ("withdraw".equals(transaction.getTransactionType())) {
             account.withdraw(transaction.getAmount());
         } else {
@@ -36,8 +40,6 @@ public class BankingService {
 
         // Record the transaction only after successful account update
         this.transactionManager.addTransaction(transaction);
-
-        return true;
     }
 
     public Account createSavingsAccount(Customer customer) {
@@ -82,7 +84,7 @@ public class BankingService {
         return accountManager.getAccountCount();
     }
 
-    public Account getAccountByNumber(String accountNumber) {
+    public Account getAccountByNumber(String accountNumber) throws AccountNotFoundException {
         return accountManager.findAccount(accountNumber);
     }
 }
