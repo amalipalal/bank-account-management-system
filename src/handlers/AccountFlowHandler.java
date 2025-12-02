@@ -2,6 +2,8 @@ package handlers;
 
 import config.AppConfig;
 import models.*;
+import models.exceptions.InsufficientFundsException;
+import models.exceptions.OverdraftExceededException;
 import services.BankingService;
 import utils.DisplayUtil;
 import utils.InputReader;
@@ -24,13 +26,15 @@ public class AccountFlowHandler {
 
         Customer newCustomer = createCustomerFlow();
 
-        System.out.println();
-        System.out.println("Account type:");
-        System.out.println("1. Savings Account (Interest: 3.5%, Min Balance: $500)");
-        System.out.println("2. Checking Account (Overdraft: $1,000, Monthly Fee: $10)");
-        System.out.println();
+        displayAccountTypeOptions();
 
-        Account newAccount = createAccountFlow(newCustomer);
+        Account newAccount;
+        try {
+            newAccount = createAccountFlow(newCustomer);
+        } catch (OverdraftExceededException | InsufficientFundsException e) {
+            DisplayUtil.displayNotice(e.getMessage());
+            return;
+        }
 
         System.out.println();
 
@@ -68,7 +72,15 @@ public class AccountFlowHandler {
         System.out.println();
     }
 
-    private Account createAccountFlow(Customer customer) {
+    private void displayAccountTypeOptions() {
+        System.out.println();
+        System.out.println("Account type:");
+        System.out.println("1. Savings Account (Interest: 3.5%, Min Balance: $500)");
+        System.out.println("2. Checking Account (Overdraft: $1,000, Monthly Fee: $10)");
+        System.out.println();
+    }
+
+    private Account createAccountFlow(Customer customer) throws OverdraftExceededException, InsufficientFundsException {
         int accountType = this.input.readInt("Select type (1-2)", 1, 2);
 
         double initialDeposit = getInitialDeposit(customer, accountType);

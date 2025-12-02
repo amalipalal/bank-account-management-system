@@ -2,6 +2,8 @@ package handlers;
 
 import models.Account;
 import models.Transaction;
+import models.exceptions.InsufficientFundsException;
+import models.exceptions.OverdraftExceededException;
 import services.BankingService;
 import utils.DisplayUtil;
 import utils.InputReader;
@@ -67,13 +69,12 @@ public class TransactionFlowHandler {
 
         boolean isConfirmed = this.input.readYesOrNo("Confirm transaction? (Y/N)");
 
-        if (isConfirmed) {
-            boolean isSuccessful = this.bankingService.confirmTransaction(customerAccount, newTransaction);
-
-            if (isSuccessful) {
+        if(isConfirmed) {
+            try {
+                this.bankingService.confirmTransaction(customerAccount, newTransaction);
                 System.out.println("Transaction completed successful!");
-            } else {
-                System.out.println("Transaction failed. Please try again.");
+            } catch (InsufficientFundsException | OverdraftExceededException e) {
+                System.out.println(e.getMessage());
             }
         } else {
             System.out.println("Transaction not confirmed. Aborting.");
