@@ -2,6 +2,8 @@ package models;
 
 import config.AppConfig;
 import interfaces.Transactable;
+import models.exceptions.InvalidAmountException;
+import models.exceptions.OverdraftExceededException;
 
 public class CheckingAccount extends Account implements Transactable {
     private final double OVERDRAFT_LIMIT = AppConfig.OVERDRAFT_LIMIT_CHECKING_ACCOUNT;
@@ -23,7 +25,7 @@ public class CheckingAccount extends Account implements Transactable {
     }
 
     @Override
-    public boolean processTransaction(double amount, String type) {
+    public boolean processTransaction(double amount, String type) throws OverdraftExceededException{
         if(amount <= 0) return false;
 
         switch (type.toLowerCase()) {
@@ -41,25 +43,25 @@ public class CheckingAccount extends Account implements Transactable {
     }
 
     @Override
-    public void withdraw(double amount) {
+    public void withdraw(double amount) throws OverdraftExceededException{
         if(amount <= 0) {
-            throw new IllegalArgumentException("Withdrawal amount must be positive");
+            throw new InvalidAmountException("Withdrawal amount must be positive");
         }
 
         double currentAccountBalance = super.getBalance();
         double newAccountBalance = currentAccountBalance - amount;
 
         if(newAccountBalance < -this.OVERDRAFT_LIMIT) {
-            throw new IllegalStateException("Withdrawal not allowed: overdraft limit is exceeded");
+            throw new OverdraftExceededException("Withdrawal not allowed: overdraft limit is exceeded");
         }
 
         super.setBalance(newAccountBalance);
     }
 
-    public void applyMonthlyFee() {
+    public void applyMonthlyFee() throws OverdraftExceededException{
         double newAccountBalance = super.getBalance() - this.monthlyFee;
         if(newAccountBalance < -this.OVERDRAFT_LIMIT) {
-            throw new IllegalStateException("Monthly fee cannot be applied: overdraft limit exceeded");
+            throw new OverdraftExceededException("Monthly fee cannot be applied: overdraft limit exceeded");
         }
         super.setBalance(newAccountBalance);
     }

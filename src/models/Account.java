@@ -1,5 +1,8 @@
 package models;
 
+import models.exceptions.InsufficientFundsException;
+import models.exceptions.OverdraftExceededException;
+
 import java.text.DecimalFormat;
 
 public abstract class Account {
@@ -32,7 +35,7 @@ public abstract class Account {
 
     public abstract String getAccountType();
 
-    public abstract void withdraw(double amount);
+    public abstract void withdraw(double amount) throws OverdraftExceededException, InsufficientFundsException;
 
     public void deposit(double amount) {
         this.balance += amount;
