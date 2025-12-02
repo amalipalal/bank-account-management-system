@@ -9,12 +9,11 @@ import utils.InputReader;
 import utils.ValidationUtil;
 
 import java.util.Scanner;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 public class TerminalApplication {
     private static final Scanner SCANNER = new Scanner(System.in);
     private static final BankingService BANKING_SERVICE = new BankingService(new AccountManager(), new TransactionManager());
+    private static final InputReader INPUT = new InputReader(new Scanner(System.in));
 
     public static void start() {
         // Populate the program with already existing customer accounts
@@ -28,7 +27,7 @@ public class TerminalApplication {
             try {
                 DisplayUtil.displayMainMenu();
 
-                int userSelection = readInt("Select an option (1-5)", 1, 5);
+                int userSelection = INPUT.readInt("Select an option (1-5)", 1, 5);
                 System.out.println();
 
                 switch(userSelection) {
@@ -77,15 +76,15 @@ public class TerminalApplication {
     }
 
     private static Customer createCustomerFlow() {
-        String customerName = readNonEmptyString(
+        String customerName = INPUT.readNonEmptyString(
                 "Enter customer name", ValidationUtil::validateName);
 
-        int customerAge = readInt("Enter customer age", 1, 120);
+        int customerAge = INPUT.readInt("Enter customer age", 1, 120);
 
-        String customerContact = readNonEmptyString(
+        String customerContact = INPUT.readNonEmptyString(
                 "Enter customer contact", ValidationUtil::validatePhoneNumber);
 
-        String customerAddress = readNonEmptyString(
+        String customerAddress = INPUT.readNonEmptyString(
                 "Enter customer address", ValidationUtil::validateAddress);
 
         System.out.println();
@@ -94,7 +93,7 @@ public class TerminalApplication {
         System.out.println("2. Premium Customer (Enhanced benefits, min balance $10,000)");
         System.out.println();
 
-        int customerType = readInt("Select type (1-2)", 1, 2);
+        int customerType = INPUT.readInt("Select type (1-2)", 1, 2);
 
         return customerType == 1
                 ? new RegularCustomer(customerName, customerAge, customerContact, customerAddress)
@@ -102,7 +101,7 @@ public class TerminalApplication {
     }
 
     private static Account createAccountFlow(Customer customer) {
-        int accountType = readInt("Select type (1-2)", 1, 2);
+        int accountType = INPUT.readInt("Select type (1-2)", 1, 2);
 
         double initialDeposit = getInitialDeposit(customer, accountType);
 
@@ -126,7 +125,7 @@ public class TerminalApplication {
         double minimumDeposit = getMinimumDeposit(customer, accountType);
 
         do {
-            initialDeposit = readDouble("Enter initial deposit amount (minimum GHS " + minimumDeposit + ")", 0);
+            initialDeposit = INPUT.readDouble("Enter initial deposit amount (minimum GHS " + minimumDeposit + ")", 0);
             if (initialDeposit < minimumDeposit) {
                 System.out.println("Initial deposit must be at least $ " + minimumDeposit);
             }
@@ -150,62 +149,6 @@ public class TerminalApplication {
             DisplayUtil.displayNewSavingsAccount((SavingsAccount) account);
         } else if (account instanceof CheckingAccount) {
             DisplayUtil.displayNewCheckingAccount((CheckingAccount) account);
-        }
-    }
-
-    private static int readInt(String prompt, int min, int max) {
-        while (true) {
-            System.out.print(prompt + ": ");
-
-            String input = SCANNER.nextLine();
-
-            try {
-                int value = Integer.parseInt(input);
-                if(value < min || value > max) {
-                    System.out.println("Please enter a number between " + min + " and " + max + ".");
-                    continue;
-                }
-                return value;
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a valid number.");
-            }
-        }
-    }
-
-    private static double readDouble(String prompt, double min) {
-        while (true) {
-            System.out.print(prompt + ": ");
-
-            String input = SCANNER.nextLine();
-
-            try {
-                double value = Double.parseDouble(input);
-                if(value < min) {
-                    System.out.println("Please enter a number more than " + min + ".");
-                    continue;
-                }
-                return value;
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a valid number.");
-            }
-
-        }
-    }
-
-    private static String readNonEmptyString(String prompt, Function<String, String> validator) {
-        while (true) {
-            System.out.print(prompt + ": ");
-            String input = SCANNER.nextLine().trim();
-
-            String errorMessage = validator.apply(input);
-
-            // The validator returns null if the input is valid
-            // so this is the case where there is no error message
-            if(errorMessage == null) {
-                return input;
-            }
-
-            System.out.println(errorMessage);
         }
     }
 
@@ -237,7 +180,7 @@ public class TerminalApplication {
     }
 
     private static Account handleAccountValidationFlow() {
-        String accountNumber = readNonEmptyString("Enter Account Number", ValidationUtil::validateAccountNumber);
+        String accountNumber = INPUT.readNonEmptyString("Enter Account Number", ValidationUtil::validateAccountNumber);
 
         Account customerAccount = BANKING_SERVICE.getAccountByNumber(accountNumber);
 
@@ -254,9 +197,9 @@ public class TerminalApplication {
         System.out.println("1. Deposit \n2. Withdrawal");
         System.out.println();
 
-        int transactionType = readInt("Select type (1-2)", 1, 2);
+        int transactionType = INPUT.readInt("Select type (1-2)", 1, 2);
 
-        double transactionAmount = readDouble("Enter amount", 0);
+        double transactionAmount = INPUT.readDouble("Enter amount", 0);
 
         System.out.println();
 
@@ -272,7 +215,7 @@ public class TerminalApplication {
 
         System.out.println();
 
-        boolean isConfirmed = readYesOrNo("Confirm transaction? (Y/N)");
+        boolean isConfirmed = INPUT.readYesOrNo("Confirm transaction? (Y/N)");
 
         if (isConfirmed) {
             boolean isSuccessful = BANKING_SERVICE.confirmTransaction(customerAccount, newTransaction);
@@ -287,27 +230,10 @@ public class TerminalApplication {
         }
     }
 
-    private static boolean readYesOrNo(String prompt) {
-        while (true) {
-            System.out.print(prompt + ": ");
-
-            String input = SCANNER.nextLine();
-
-            switch (input.toLowerCase()) {
-                case "y":
-                    return true;
-                case "n":
-                    return false;
-                default:
-                    System.out.println("Invalid input: Please enter Y or N.");
-            }
-        }
-    }
-
     public static void handleTransactionListingFlow() {
         DisplayUtil.displayHeading("View Transaction history");
 
-        String accountNumber = readNonEmptyString(
+        String accountNumber = INPUT.readNonEmptyString(
                 "Enter Account Number", ValidationUtil::validateAccountNumber);
 
         Account customerAccount = BANKING_SERVICE.getAccountByNumber(accountNumber);
