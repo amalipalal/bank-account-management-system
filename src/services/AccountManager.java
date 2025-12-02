@@ -2,6 +2,9 @@ package services;
 
 import config.AppConfig;
 import models.Account;
+import services.exceptions.AccountLimitExceededException;
+import services.exceptions.AccountNotFoundException;
+import services.exceptions.InvalidAccountNumberException;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -17,16 +20,16 @@ public class AccountManager {
 
     public void addAccount(Account account) {
         if(accountCount == accounts.length) {
-            throw new IllegalStateException("Cannot add account: account list is full.");
+            throw new AccountLimitExceededException("Cannot add account: maximum number of accounts reached.");
         }
         accounts[accountCount] = account;
         accountCount++;
     }
 
-    public Account findAccount(String accountNumber) {
+    public Account findAccount(String accountNumber) throws AccountNotFoundException {
         int accountIndex = extractAccountIndex(accountNumber);
         if( accountIndex < 0 || accountIndex >= accounts.length || accounts[accountIndex] == null) {
-            throw new IllegalArgumentException("Cannot find account: account doesn't exist");
+            throw new AccountNotFoundException("Cannot find account: account doesn't exist");
         }
 
         return accounts[accountIndex];
@@ -39,7 +42,7 @@ public class AccountManager {
         try {
             return Integer.parseInt(indexString) - 1;
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(e);
+            throw new InvalidAccountNumberException("Account number format is invalid: " + accountNumber);
         }
     }
 
