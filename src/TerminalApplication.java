@@ -44,7 +44,6 @@ public class TerminalApplication {
             seeder.seed();
         } catch (Exception e) {
             DisplayUtil.displayNotice("Could Not start Application");
-            return;
         }
     }
 
