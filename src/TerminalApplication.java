@@ -19,8 +19,7 @@ public class TerminalApplication {
     public static void start() {
         // Populate the program with already existing customer accounts
         // defined within seed method
-        DataSeeder seeder = new DataSeeder(BANKING_SERVICE);
-        seeder.seed();
+        seedData();
 
         boolean userIsActive = true;
 
@@ -31,28 +30,43 @@ public class TerminalApplication {
                 int userSelection = INPUT.readInt("Select an option (1-5)", 1, 5);
                 System.out.println();
 
-                switch(userSelection) {
-                    case 1:
-                        ACCOUNT_FLOW.handleAccountCreationFlow();
-                        break;
-                    case 2:
-                        ACCOUNT_FLOW.handleAccountListingFlow();
-                        break;
-                    case 3:
-                        TRANSACTION_FLOW.handleTransactionFlow();
-                        break;
-                    case 4:
-                        TRANSACTION_FLOW.handleTransactionListingFlow();
-                        break;
-                    case 5:
-                        userIsActive = false;
-                        break;
-                    default:
-                        DisplayUtil.displayNotice("Wrong number selection");
-                }
+                userIsActive = handleMenuSelection(userSelection);
+
             } catch (Exception e) {
                 DisplayUtil.displayNotice(e.getMessage());
             }
         }
+    }
+
+    public static void seedData() {
+        DataSeeder seeder = new DataSeeder(BANKING_SERVICE);
+        try {
+            seeder.seed();
+        } catch (Exception e) {
+            DisplayUtil.displayNotice("Could Not start Application");
+        }
+    }
+
+    public static boolean handleMenuSelection(int userSelection) {
+        switch(userSelection) {
+            case 1:
+                ACCOUNT_FLOW.handleAccountCreationFlow();
+                break;
+            case 2:
+                ACCOUNT_FLOW.handleAccountListingFlow();
+                break;
+            case 3:
+                TRANSACTION_FLOW.handleTransactionFlow();
+                break;
+            case 4:
+                TRANSACTION_FLOW.handleTransactionListingFlow();
+                break;
+            case 5:
+                return false;
+            default:
+                DisplayUtil.displayNotice("Wrong number selection");
+        }
+
+        return true;
     }
 }

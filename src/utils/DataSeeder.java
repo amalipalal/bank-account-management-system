@@ -12,7 +12,7 @@ public class DataSeeder {
         this.bankingService = bankingService;
     }
 
-    public void seed() {
+    public void seed() throws Exception{
         createSavingsAccount(
                 new RegularCustomer("Alice Johnson", 28, "0101010101", "Accra"),
                 1200
@@ -39,13 +39,13 @@ public class DataSeeder {
         );
     }
 
-    private void createSavingsAccount(Customer customer, double initialDeposit) {
+    private void createSavingsAccount(Customer customer, double initialDeposit) throws Exception {
         var account = bankingService.createSavingsAccount(customer);
         var transaction = bankingService.processDeposit(account, initialDeposit);
         bankingService.confirmTransaction(account, transaction);
     }
 
-    private void createCheckingAccount(Customer customer, double initialDeposit) {
+    private void createCheckingAccount(Customer customer, double initialDeposit) throws Exception {
         var account = bankingService.createCheckingAccount(customer);
         var transaction = bankingService.processDeposit(account, initialDeposit);
         bankingService.confirmTransaction(account, transaction);

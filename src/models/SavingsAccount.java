@@ -2,6 +2,8 @@ package models;
 
 import config.AppConfig;
 import interfaces.Transactable;
+import models.exceptions.InsufficientFundsException;
+import models.exceptions.InvalidAmountException;
 
 public class SavingsAccount extends Account implements Transactable {
     private final double INTEREST_RATE = AppConfig.INTEREST_RATE_SAVINGS_ACCOUNT;
@@ -17,7 +19,7 @@ public class SavingsAccount extends Account implements Transactable {
     }
 
     @Override
-    public boolean processTransaction(double amount, String type) {
+    public boolean processTransaction(double amount, String type) throws InsufficientFundsException{
         if(amount <= 0) return false;
 
         switch (type.toLowerCase()) {
@@ -35,19 +37,19 @@ public class SavingsAccount extends Account implements Transactable {
     }
 
     @Override
-    public void withdraw(double amount) {
+    public void withdraw(double amount) throws InsufficientFundsException{
 
         if(amount <= 0) {
-            throw new IllegalArgumentException("Withdrawal amount must be positive");
+            throw new InvalidAmountException("Withdrawal amount must be positive");
         }
 
         double currentAccountBalance = super.getBalance();
 
         double newAccountBalance = currentAccountBalance - amount;
         if(newAccountBalance < 0) {
-            throw new IllegalArgumentException("Withdrawal amount exceeds available balance");
+            throw new InvalidAmountException("Withdrawal amount exceeds available balance");
         } else if (newAccountBalance < MINIMUM_BALANCE) {
-            throw new IllegalStateException("Withdrawal not allowed: balance is at minimum");
+            throw new InsufficientFundsException("Withdrawal not allowed: balance is at minimum");
         }
 
         super.setBalance(newAccountBalance);

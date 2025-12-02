@@ -2,6 +2,7 @@ package services;
 
 import config.AppConfig;
 import models.Transaction;
+import services.exceptions.TransactionLimitExceededException;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -16,9 +17,8 @@ public class TransactionManager {
     }
 
     public void addTransaction(Transaction transaction) {
-        if(this.transactionCount == transactions.length) {
-            throw new IllegalStateException("Addition not allowed: maximum number of transactions have been made");
-        }
+        if(this.transactionCount == transactions.length)
+            throw new TransactionLimitExceededException("Addition not allowed: maximum number of transactions have been made");
 
         transactions[this.transactionCount] = transaction;
         this.transactionCount++;

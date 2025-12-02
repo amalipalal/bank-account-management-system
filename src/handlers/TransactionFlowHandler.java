@@ -2,7 +2,10 @@ package handlers;
 
 import models.Account;
 import models.Transaction;
+import models.exceptions.InsufficientFundsException;
+import models.exceptions.OverdraftExceededException;
 import services.BankingService;
+import services.exceptions.AccountNotFoundException;
 import utils.DisplayUtil;
 import utils.InputReader;
 import utils.ValidationUtil;
@@ -22,24 +25,27 @@ public class TransactionFlowHandler {
 
         System.out.println();
 
-        Account customerAccount = handleAccountValidationFlow();
-
-        Transaction newTransaction = handleTransactionTypeFlow(customerAccount);
-
-        handleTransactionConfirmation(customerAccount, newTransaction);
-    }
-
-    private Account handleAccountValidationFlow() {
-        String accountNumber = this.input.readNonEmptyString("Enter Account Number", ValidationUtil::validateAccountNumber);
-
-        Account customerAccount = this.bankingService.getAccountByNumber(accountNumber);
+        Account customerAccount = findAccountOrNotify();
+        if (customerAccount == null) return;
 
         System.out.println("Account Details:");
         DisplayUtil.displayAccountDetails(customerAccount);
 
         System.out.println();
 
-        return customerAccount;
+        Transaction newTransaction = handleTransactionTypeFlow(customerAccount);
+
+        handleTransactionConfirmation(customerAccount, newTransaction);
+    }
+
+    private Account findAccountOrNotify() {
+        String accountNumber = this.input.readNonEmptyString("Enter Account Number", ValidationUtil::validateAccountNumber);
+        try {
+            return this.bankingService.getAccountByNumber(accountNumber);
+        } catch (AccountNotFoundException e) {
+            DisplayUtil.displayNotice(e.getMessage());
+            return null;
+        }
     }
 
     private Transaction handleTransactionTypeFlow(Account customerAccount) {
@@ -67,13 +73,12 @@ public class TransactionFlowHandler {
 
         boolean isConfirmed = this.input.readYesOrNo("Confirm transaction? (Y/N)");
 
-        if (isConfirmed) {
-            boolean isSuccessful = this.bankingService.confirmTransaction(customerAccount, newTransaction);
-
-            if (isSuccessful) {
+        if(isConfirmed) {
+            try {
+                this.bankingService.confirmTransaction(customerAccount, newTransaction);
                 System.out.println("Transaction completed successful!");
-            } else {
-                System.out.println("Transaction failed. Please try again.");
+            } catch (InsufficientFundsException | OverdraftExceededException e) {
+                System.out.println(e.getMessage());
             }
         } else {
             System.out.println("Transaction not confirmed. Aborting.");
@@ -83,14 +88,13 @@ public class TransactionFlowHandler {
     public void handleTransactionListingFlow() {
         DisplayUtil.displayHeading("View Transaction history");
 
-        String accountNumber = this.input.readNonEmptyString(
-                "Enter Account Number", ValidationUtil::validateAccountNumber);
-
-        Account customerAccount = this.bankingService.getAccountByNumber(accountNumber);
+        Account customerAccount = findAccountOrNotify();
+        if(customerAccount == null) return;
 
         DisplayUtil.displayAccountDetails(customerAccount);
 
-        Transaction[] customerTransactions = this.bankingService.getTransactionsByAccount(accountNumber);
+        Transaction[] customerTransactions = this.bankingService.getTransactionsByAccount(
+                customerAccount.getAccountNumber());
 
         if (customerTransactions.length == 0) {
             DisplayUtil.displayNotice("No transactions recorded for this account.");
