@@ -1,15 +1,12 @@
-package com.amalitech.bankmanagement.main;
-
-import com.amalitech.bankmanagement.main.base.Account;
-import com.amalitech.bankmanagement.main.base.Customer;
-import com.amalitech.bankmanagement.main.config.AppConfig;
-import com.amalitech.bankmanagement.main.domain.*;
-import com.amalitech.bankmanagement.main.manager.AccountManager;
-import com.amalitech.bankmanagement.main.manager.TransactionManager;
-import com.amalitech.bankmanagement.main.service.BankingService;
-import com.amalitech.bankmanagement.main.util.DataSeeder;
-import com.amalitech.bankmanagement.main.util.DisplayUtil;
-import com.amalitech.bankmanagement.main.util.ValidationUtil;
+import models.*;
+import config.AppConfig;
+import services.AccountManager;
+import services.TransactionManager;
+import services.BankingService;
+import utils.DataSeeder;
+import utils.DisplayUtil;
+import utils.InputReader;
+import utils.ValidationUtil;
 
 import java.util.Scanner;
 import java.util.function.Function;
