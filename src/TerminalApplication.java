@@ -1,4 +1,5 @@
 import handlers.AccountFlowHandler;
+import handlers.TransactionFlowHandler;
 import models.*;
 import services.AccountManager;
 import services.TransactionManager;
@@ -14,6 +15,7 @@ public class TerminalApplication {
     private static final BankingService BANKING_SERVICE = new BankingService(new AccountManager(), new TransactionManager());
     private static final InputReader INPUT = new InputReader(new Scanner(System.in));
     private static final AccountFlowHandler ACCOUNT_FLOW = new AccountFlowHandler(BANKING_SERVICE, INPUT);
+    private static final TransactionFlowHandler TRANSACTION_FLOW = new TransactionFlowHandler(BANKING_SERVICE, INPUT);
 
     public static void start() {
         // Populate the program with already existing customer accounts
@@ -38,10 +40,10 @@ public class TerminalApplication {
                         ACCOUNT_FLOW.handleAccountListingFlow();
                         break;
                     case 3:
-                        handleTransactionFlow();
+                        TRANSACTION_FLOW.handleTransactionFlow();
                         break;
                     case 4:
-                        handleTransactionListingFlow();
+                        TRANSACTION_FLOW.handleTransactionListingFlow();
                         break;
                     case 5:
                         userIsActive = false;
