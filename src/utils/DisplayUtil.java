@@ -1,10 +1,10 @@
-package com.amalitech.bankmanagement.main.util;
+package utils;
 
-import com.amalitech.bankmanagement.main.base.Account;
-import com.amalitech.bankmanagement.main.base.Customer;
-import com.amalitech.bankmanagement.main.domain.CheckingAccount;
-import com.amalitech.bankmanagement.main.domain.SavingsAccount;
-import com.amalitech.bankmanagement.main.domain.Transaction;
+import models.Account;
+import models.Customer;
+import models.CheckingAccount;
+import models.SavingsAccount;
+import models.Transaction;
 
 import java.time.Instant;
 import java.time.ZoneId;

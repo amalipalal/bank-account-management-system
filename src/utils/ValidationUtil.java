@@ -1,4 +1,4 @@
-package com.amalitech.bankmanagement.main.util;
+package utils;
 
 public class ValidationUtil {
 

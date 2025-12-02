@@ -1,4 +1,4 @@
-package com.amalitech.bankmanagement.main.base;
+package models;
 
 public abstract class Customer {
     private final String customerId;

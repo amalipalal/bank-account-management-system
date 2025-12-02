@@ -1,6 +1,6 @@
-package com.amalitech.bankmanagement.main.manager;
+package services;
 
-import com.amalitech.bankmanagement.main.base.Account;
+import models.Account;
 
 import java.util.Arrays;
 import java.util.Objects;

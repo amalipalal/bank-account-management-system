@@ -1,4 +1,4 @@
-package com.amalitech.bankmanagement.main.config;
+package config;
 
 public class AppConfig {
     public static final double MINIMUM_INITIAL_DEPOSIT_SAVINGS = 500.00;

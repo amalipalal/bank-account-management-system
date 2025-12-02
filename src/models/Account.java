@@ -1,4 +1,4 @@
-package com.amalitech.bankmanagement.main.base;
+package models;
 
 import java.text.DecimalFormat;
 

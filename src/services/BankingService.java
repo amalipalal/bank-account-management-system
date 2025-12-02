@@ -1,13 +1,11 @@
-package com.amalitech.bankmanagement.main.service;
+package services;
 
-import com.amalitech.bankmanagement.main.base.Account;
-import com.amalitech.bankmanagement.main.base.Customer;
-import com.amalitech.bankmanagement.main.domain.CheckingAccount;
-import com.amalitech.bankmanagement.main.domain.PremiumCustomer;
-import com.amalitech.bankmanagement.main.domain.SavingsAccount;
-import com.amalitech.bankmanagement.main.domain.Transaction;
-import com.amalitech.bankmanagement.main.manager.AccountManager;
-import com.amalitech.bankmanagement.main.manager.TransactionManager;
+import models.Account;
+import models.Customer;
+import models.CheckingAccount;
+import models.PremiumCustomer;
+import models.SavingsAccount;
+import models.Transaction;
 
 public class BankingService {
     private final AccountManager accountManager;

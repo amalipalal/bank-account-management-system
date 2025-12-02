@@ -1,6 +1,4 @@
-package com.amalitech.bankmanagement.main.domain;
-
-import com.amalitech.bankmanagement.main.base.Customer;
+package models;
 
 public class PremiumCustomer extends Customer {
 

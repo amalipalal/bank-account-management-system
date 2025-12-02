@@ -1,4 +1,4 @@
-package com.amalitech.bankmanagement.main.domain;
+package models;
 
 import java.text.DecimalFormat;
 import java.time.Instant;

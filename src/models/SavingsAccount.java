@@ -1,8 +1,6 @@
-package com.amalitech.bankmanagement.main.domain;
+package models;
 
-import com.amalitech.bankmanagement.main.base.Account;
-import com.amalitech.bankmanagement.main.base.Customer;
-import com.amalitech.bankmanagement.main.interfaces.Transactable;
+import interfaces.Transactable;
 
 public class SavingsAccount extends Account implements Transactable {
     private final double INTEREST_RATE = 0.035;

@@ -1,9 +1,9 @@
-package com.amalitech.bankmanagement.main.util;
+package utils;
 
-import com.amalitech.bankmanagement.main.base.Customer;
-import com.amalitech.bankmanagement.main.domain.PremiumCustomer;
-import com.amalitech.bankmanagement.main.domain.RegularCustomer;
-import com.amalitech.bankmanagement.main.service.BankingService;
+import models.Customer;
+import models.PremiumCustomer;
+import models.RegularCustomer;
+import services.BankingService;
 
 public class DataSeeder {
     private final BankingService bankingService;
