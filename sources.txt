@@ -19,6 +19,9 @@ src/config/AppConfig.java
 src/models/exceptions/InsufficientFundsException.java
 src/models/exceptions/InvalidAmountException.java
 src/models/exceptions/OverdraftExceededException.java
+src/models/enums/AccountType.java
+src/models/enums/CustomerType.java
+src/models/enums/TransactionType.java
 src/services/exceptions/AccountLimitExceededException.java
 src/services/exceptions/AccountNotFoundException.java
 src/services/exceptions/InvalidAccountNumberException.java
