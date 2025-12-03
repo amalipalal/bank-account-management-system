@@ -2,6 +2,7 @@ package models;
 
 import config.AppConfig;
 import interfaces.Transactable;
+import models.enums.AccountType;
 import models.exceptions.InvalidAmountException;
 import models.exceptions.OverdraftExceededException;
 import utils.DisplayUtil;
@@ -28,7 +29,7 @@ public class CheckingAccount extends Account implements Transactable {
     private String getMainRowDisplay(String columnFormat) {
         String accountNumber = this.getAccountNumber();
         String customerName = this.getCustomer().getName();
-        String accountType = this.getAccountType();
+        String accountType = this.getAccountType().toString();
         String balance = DisplayUtil.displayAmount(this.getBalance());
         String status = DisplayUtil.formatStatus(this.getStatus());
 
@@ -64,8 +65,8 @@ public class CheckingAccount extends Account implements Transactable {
     }
 
     @Override
-    public String getAccountType() {
-        return "Checking";
+    public AccountType getAccountType() {
+        return AccountType.CHECKING;
     }
 
     @Override
