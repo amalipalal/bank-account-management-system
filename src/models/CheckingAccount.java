@@ -54,7 +54,7 @@ public class CheckingAccount extends Account implements Transactable {
         return String.format(
                 DisplayUtil.NEW_CHECKING_ACCOUNT_FORMAT,
                 getAccountNumber(),
-                customer.getName() + " (" + customer.getCustomerType() + ")",
+                customer.displayCustomerDetails(),
                 getAccountType(),
                 DisplayUtil.displayAmount(getBalance()),
                 DisplayUtil.displayAmount(getOVERDRAFT_LIMIT()),
