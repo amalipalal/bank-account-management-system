@@ -2,6 +2,8 @@ package models;
 
 import config.AppConfig;
 import interfaces.Transactable;
+import models.enums.AccountType;
+import models.enums.TransactionType;
 import models.exceptions.InsufficientFundsException;
 import models.exceptions.InvalidAmountException;
 import utils.DisplayUtil;
@@ -27,7 +29,7 @@ public class SavingsAccount extends Account implements Transactable {
     private String getMainRowDisplay(String columnFormat) {
         String accountNumber = this.getAccountNumber();
         String customerName = this.getCustomer().getName();
-        String accountType = this.getAccountType();
+        String accountType = this.getAccountType().toString();
         String balance = DisplayUtil.displayAmount(this.getBalance());
         String status = this.getStatus();
 
@@ -62,14 +64,14 @@ public class SavingsAccount extends Account implements Transactable {
     }
 
     @Override
-    public boolean processTransaction(double amount, String type) throws InsufficientFundsException{
+    public boolean processTransaction(double amount, TransactionType type) throws InsufficientFundsException{
         if(amount <= 0) return false;
 
-        switch (type.toLowerCase()) {
-            case "deposit":
+        switch (type) {
+            case TransactionType.DEPOSIT:
                 super.deposit(amount);
                 break;
-            case "withdraw":
+            case TransactionType.WITHDRAWAL:
                 withdraw(amount);
                 break;
             default:
@@ -102,8 +104,8 @@ public class SavingsAccount extends Account implements Transactable {
         return super.getBalance() * this.INTEREST_RATE;
     }
 
-    public String getAccountType() {
-        return "Savings";
+    public AccountType getAccountType() {
+        return AccountType.SAVINGS;
     }
 
     public double getINTEREST_RATE() {

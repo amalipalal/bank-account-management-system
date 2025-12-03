@@ -1,5 +1,6 @@
 package models;
 
+import models.enums.AccountType;
 import models.exceptions.InsufficientFundsException;
 import models.exceptions.OverdraftExceededException;
 
@@ -35,7 +36,7 @@ public abstract class Account {
 
     public abstract String displayNewAccountDetails();
 
-    public abstract String getAccountType();
+    public abstract AccountType getAccountType();
 
     public abstract void withdraw(double amount) throws OverdraftExceededException, InsufficientFundsException;
 

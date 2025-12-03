@@ -1,5 +1,7 @@
 package models;
 
+import models.enums.CustomerType;
+
 public class PremiumCustomer extends Customer {
 
     public PremiumCustomer(String name, int age, String contact, String address) {
@@ -12,8 +14,7 @@ public class PremiumCustomer extends Customer {
     }
 
     @Override
-    public String getCustomerType() {
-        return "Premium";
+    public CustomerType getCustomerType() {
+        return CustomerType.PREMIUM;
     }
-
 }

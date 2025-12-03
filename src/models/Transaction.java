@@ -1,5 +1,7 @@
 package models;
 
+import models.enums.TransactionType;
+
 import java.text.DecimalFormat;
 import java.time.Instant;
 
@@ -7,13 +9,13 @@ public class Transaction {
     private static int transactionCounter = 0;
     private static final DecimalFormat FORMATTER = new DecimalFormat("000");
     private final String transactionId;
-    private final String transactionType;
+    private final TransactionType transactionType;
     private final String accountNumber;
     private final double amount;
     private final double balanceAfter;
     private final String timestamp;
 
-    public Transaction(String transactionType, String accountNumber, double amount, double balanceAfter){
+    public Transaction(TransactionType transactionType, String accountNumber, double amount, double balanceAfter){
         this.transactionType = transactionType;
         this.accountNumber = accountNumber;
         this.amount = amount;
@@ -45,7 +47,7 @@ public class Transaction {
         return this.transactionId;
     }
 
-    public String getTransactionType() {
+    public TransactionType getTransactionType() {
         return this.transactionType;
     }
 

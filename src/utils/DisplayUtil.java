@@ -1,10 +1,10 @@
 package utils;
 
 import models.Account;
-import models.Customer;
 import models.CheckingAccount;
-import models.SavingsAccount;
+import models.Customer;
 import models.Transaction;
+import models.enums.TransactionType;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -100,9 +100,9 @@ public class DisplayUtil {
     }
 
     private static double computePreviousBalance (Transaction transaction) {
-        if ("withdraw".equals(transaction.getTransactionType())) {
+        if (transaction.getTransactionType() == TransactionType.WITHDRAWAL) {
             return transaction.getBalanceAfter() + transaction.getAmount();
-        } else if ("deposit".equals(transaction.getTransactionType())) {
+        } else if (transaction.getTransactionType() == TransactionType.DEPOSIT) {
             return transaction.getBalanceAfter() - transaction.getAmount();
         } else {
             return 0;
@@ -118,7 +118,7 @@ public class DisplayUtil {
 
         for (Transaction transaction : transactions) {
             String dateTime = displayTimestamp(transaction.getTimestamp());
-            String type = transaction.getTransactionType().toUpperCase();
+            String type = transaction.getTransactionType().toString().toUpperCase();
 
             String amountSign = type.equalsIgnoreCase("Deposit") ? "+" : "-";
             String amount = amountSign + displayAmount(transaction.getAmount());

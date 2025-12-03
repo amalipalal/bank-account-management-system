@@ -1,5 +1,7 @@
 package models;
 
+import models.enums.CustomerType;
+
 public class RegularCustomer extends Customer {
 
     public RegularCustomer(String name, int age, String contact, String address) {
@@ -12,7 +14,7 @@ public class RegularCustomer extends Customer {
     }
 
     @Override
-    public String getCustomerType() {
-        return "Regular";
+    public CustomerType getCustomerType() {
+        return CustomerType.REGULAR;
     }
 }

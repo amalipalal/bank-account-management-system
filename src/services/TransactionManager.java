@@ -2,6 +2,7 @@ package services;
 
 import config.AppConfig;
 import models.Transaction;
+import models.enums.TransactionType;
 import services.exceptions.TransactionLimitExceededException;
 
 import java.util.Arrays;
@@ -32,21 +33,21 @@ public class TransactionManager {
     }
 
     public double calculateTotalDeposits(String accountNumber) {
-        String transactionType = "deposit";
+        TransactionType transactionType = TransactionType.DEPOSIT;
         return Arrays.stream(transactions, 0, this.transactionCount)
                 .filter(Objects::nonNull)
                 .filter(transaction -> Objects.equals(transaction.getAccountNumber(), accountNumber))
-                .filter(transaction -> Objects.equals(transaction.getTransactionType(), transactionType))
+                .filter(transaction -> transaction.getTransactionType() == transactionType)
                 .mapToDouble(Transaction::getAmount)
                 .sum();
     }
 
     public double calculateTotalWithdrawals(String accountNumber) {
-        String transactionType = "withdraw";
+        TransactionType transactionType = TransactionType.WITHDRAWAL;
         return Arrays.stream(transactions, 0, this.transactionCount)
                 .filter(Objects::nonNull)
                 .filter(transaction -> Objects.equals(transaction.getAccountNumber(), accountNumber))
-                .filter(transaction -> Objects.equals(transaction.getTransactionType(), transactionType))
+                .filter(transaction -> transaction.getTransactionType() == transactionType)
                 .mapToDouble(Transaction::getAmount)
                 .sum();
     }

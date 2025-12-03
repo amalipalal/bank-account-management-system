@@ -1,5 +1,7 @@
 package models;
 
+import models.enums.CustomerType;
+
 public abstract class Customer {
     private final String customerId;
     private final String name;
@@ -20,7 +22,7 @@ public abstract class Customer {
 
     public abstract String displayCustomerDetails();
 
-    public abstract String getCustomerType();
+    public abstract CustomerType getCustomerType();
 
     public static int getCustomerCounter() {
         return customerCounter;
