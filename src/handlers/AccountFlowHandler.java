@@ -2,6 +2,7 @@ package handlers;
 
 import config.AppConfig;
 import models.*;
+import models.enums.CustomerType;
 import models.exceptions.InsufficientFundsException;
 import models.exceptions.OverdraftExceededException;
 import services.BankingService;
@@ -113,7 +114,7 @@ public class AccountFlowHandler {
     }
 
     private double getMinimumDeposit(Customer customer, int accountType) {
-        if ("Premium".equals(customer.getCustomerType())) {
+        if (customer.getCustomerType() == CustomerType.PREMIUM) {
             return AppConfig.MINIMUM_INITIAL_DEPOSIT_PREMIUM;
         }
         return (accountType == 1)
