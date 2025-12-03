@@ -10,7 +10,8 @@ public enum AccountType {
         this.displayName = displayName;
     }
 
-    public String getDisplayName() {
+    @Override
+    public String toString() {
         return this.displayName;
     }
 }
