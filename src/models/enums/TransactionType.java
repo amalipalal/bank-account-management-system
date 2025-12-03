@@ -10,7 +10,8 @@ public enum TransactionType {
         this.displayName = displayName;
     }
 
-    String getDisplayName() {
+    @Override
+    public String toString() {
         return this.displayName;
     }
 }
