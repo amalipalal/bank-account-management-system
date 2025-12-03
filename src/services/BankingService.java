@@ -27,7 +27,7 @@ public class BankingService {
 
     public Transaction processWithdrawal(Account account, double amount) {
         double balanceAfterTransaction = account.getBalance() - amount;
-        return new Transaction(TransactionType.DEPOSIT, account.getAccountNumber(), amount, balanceAfterTransaction);
+        return new Transaction(TransactionType.WITHDRAWAL, account.getAccountNumber(), amount, balanceAfterTransaction);
     }
 
     ///  Updates the bank account balance and adds transaction to transaction store
