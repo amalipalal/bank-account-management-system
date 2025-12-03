@@ -3,6 +3,7 @@ package models;
 import config.AppConfig;
 import interfaces.Transactable;
 import models.enums.AccountType;
+import models.enums.TransactionType;
 import models.exceptions.InvalidAmountException;
 import models.exceptions.OverdraftExceededException;
 import utils.DisplayUtil;
@@ -70,14 +71,14 @@ public class CheckingAccount extends Account implements Transactable {
     }
 
     @Override
-    public boolean processTransaction(double amount, String type) throws OverdraftExceededException{
+    public boolean processTransaction(double amount, TransactionType type) throws OverdraftExceededException{
         if(amount <= 0) return false;
 
-        switch (type.toLowerCase()) {
-            case "deposit":
+        switch (type) {
+            case TransactionType.DEPOSIT:
                 super.deposit(amount);
                 break;
-            case "withdraw":
+            case TransactionType.WITHDRAWAL:
                 withdraw(amount);
                 break;
             default:

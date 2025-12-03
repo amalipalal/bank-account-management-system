@@ -3,6 +3,7 @@ package models;
 import config.AppConfig;
 import interfaces.Transactable;
 import models.enums.AccountType;
+import models.enums.TransactionType;
 import models.exceptions.InsufficientFundsException;
 import models.exceptions.InvalidAmountException;
 import utils.DisplayUtil;
@@ -63,14 +64,14 @@ public class SavingsAccount extends Account implements Transactable {
     }
 
     @Override
-    public boolean processTransaction(double amount, String type) throws InsufficientFundsException{
+    public boolean processTransaction(double amount, TransactionType type) throws InsufficientFundsException{
         if(amount <= 0) return false;
 
-        switch (type.toLowerCase()) {
-            case "deposit":
+        switch (type) {
+            case TransactionType.DEPOSIT:
                 super.deposit(amount);
                 break;
-            case "withdraw":
+            case TransactionType.WITHDRAWAL:
                 withdraw(amount);
                 break;
             default:
