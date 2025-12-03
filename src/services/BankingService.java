@@ -6,6 +6,7 @@ import models.CheckingAccount;
 import models.PremiumCustomer;
 import models.SavingsAccount;
 import models.Transaction;
+import models.enums.TransactionType;
 import models.exceptions.InsufficientFundsException;
 import models.exceptions.OverdraftExceededException;
 import services.exceptions.AccountNotFoundException;
@@ -32,10 +33,12 @@ public class BankingService {
     ///  Updates the bank account balance and adds transaction to transaction store
     public void confirmTransaction(Account account, Transaction transaction) throws OverdraftExceededException,
             InsufficientFundsException {
-        if ("withdraw".equals(transaction.getTransactionType())) {
-            account.withdraw(transaction.getAmount());
-        } else {
-            account.deposit(transaction.getAmount());
+        TransactionType type = transaction.getTransactionType();
+
+        switch (type) {
+            case TransactionType.WITHDRAWAL -> account.withdraw(transaction.getAmount());
+            case TransactionType.DEPOSIT -> account.deposit(transaction.getAmount());
+            default -> throw new IllegalArgumentException("Unsupported transaction type: " + type);
         }
 
         // Record the transaction only after successful account update
