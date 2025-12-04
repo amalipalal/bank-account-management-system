@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import services.AccountManager;
+import services.exceptions.AccountNotFoundException;
 
 class AccountManagerTest {
 
@@ -60,5 +61,25 @@ class AccountManagerTest {
         double actual = accountManager.getTotalBalance();
 
         Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    @DisplayName("Should return correct account when account number is valid")
+    void testFindAccountFound() throws AccountNotFoundException {
+        var regularCustomer = new RegularCustomer("Palal", 21, "+233599968996", "somewhere");
+        Account savingsAccount = new SavingsAccount(regularCustomer, 500.1, "active");
+        accountManager.addAccount(savingsAccount);
+
+        Account found = accountManager.findAccount(savingsAccount.getAccountNumber());
+
+        Assertions.assertEquals(savingsAccount, found);
+    }
+
+    @Test
+    @DisplayName("Should throw AccountNotFoundException for non-existent account")
+    void testFindAccountInvalid() {
+        Assertions.assertThrows(AccountNotFoundException.class, () -> {
+            accountManager.findAccount("ACC999");
+        });
     }
 }
