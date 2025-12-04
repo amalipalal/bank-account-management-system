@@ -78,4 +78,33 @@ public class CheckedAccountTest {
         Assertions.assertEquals(expectedBalance, actualRegularBalance);
         Assertions.assertEquals(expectedBalance, actualPremiumBalance);
     }
+
+    @Test
+    @DisplayName("Should throw InvalidAmountException for negative deposit")
+    public void validateDepositAmount() {
+        double depositAmount = -409.56;
+
+        Assertions.assertThrows(InvalidAmountException.class, () -> {
+            regularChecked.deposit(depositAmount);
+            premiumChecked.deposit(depositAmount);
+        });
+    }
+
+    @Test
+    @DisplayName("Should update balance correctly after valid deposit")
+    public void processAllowedDeposit() {
+        double depositAmount = 500;
+
+        Assertions.assertDoesNotThrow(() -> {
+            regularChecked.deposit(depositAmount);
+            premiumChecked.deposit(depositAmount);
+        });
+
+        double expectedBalance = 1500;
+        double actualRegularBalance = regularChecked.getBalance();
+        double actualPremiumBalance = premiumChecked.getBalance();
+
+        Assertions.assertEquals(expectedBalance, actualRegularBalance);
+        Assertions.assertEquals(expectedBalance, actualPremiumBalance);
+    }
 }
