@@ -72,4 +72,33 @@ public class SavingsAccountTest {
         Assertions.assertEquals(expectedBalance, actualRegularBalance);
         Assertions.assertEquals(expectedBalance, actualPremiumBalance);
     }
+
+    @Test
+    @DisplayName("Should throw InvalidAmountException for negative deposit")
+    public void validateDepositAmount() {
+        double depositAmount = -409.56;
+
+        Assertions.assertThrows(InvalidAmountException.class, () -> {
+            regularSavings.deposit(depositAmount);
+            premiumSavings.deposit(depositAmount);
+        });
+    }
+
+    @Test
+    @DisplayName("Should update balance correctly after valid deposit")
+    public void processAllowedDeposit() {
+        double depositAmount = 500;
+
+        Assertions.assertDoesNotThrow(() -> {
+            regularSavings.deposit(depositAmount);
+            premiumSavings.deposit(depositAmount);
+        });
+
+        double expectedBalance = 1500;
+        double actualRegularBalance = regularSavings.getBalance();
+        double actualPremiumBalance = premiumSavings.getBalance();
+
+        Assertions.assertEquals(expectedBalance, actualRegularBalance);
+        Assertions.assertEquals(expectedBalance, actualPremiumBalance);
+    }
 }
