@@ -1,5 +1,3 @@
-package test.java;
-
 import models.CheckingAccount;
 import models.Customer;
 import models.PremiumCustomer;
