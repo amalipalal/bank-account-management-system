@@ -81,4 +81,36 @@ public class BankServiceTest {
 
         verify(accountManager).addAccount(any());
     }
+
+    @Test
+    @DisplayName("Should create correct withdrawal transactions")
+    void testProcessWithdrawal() {
+        Customer customer = mock(Customer.class);
+        Account account = new CheckingAccount(customer, 1000, "active");
+
+        Transaction transaction = bankingService.processWithdrawal(account, 20);
+
+        Assertions.assertEquals(TransactionType.WITHDRAWAL, transaction.getTransactionType());
+        Assertions.assertEquals(account.getAccountNumber(), transaction.getAccountNumber());
+        Assertions.assertEquals(980, transaction.getBalanceAfter());
+        Assertions.assertEquals(20, transaction.getAmount());
+
+        Assertions.assertEquals(1000, account.getBalance());
+    }
+
+    @Test
+    @DisplayName("Should create correct deposit transactions")
+    void testProcessDeposit() {
+        Customer customer = mock(Customer.class);
+        Account account = new CheckingAccount(customer, 1000, "active");
+
+        Transaction transaction = bankingService.processDeposit(account, 1000);
+
+        Assertions.assertEquals(TransactionType.DEPOSIT, transaction.getTransactionType());
+        Assertions.assertEquals(account.getAccountNumber(), transaction.getAccountNumber());
+        Assertions.assertEquals(2000, transaction.getBalanceAfter());
+        Assertions.assertEquals(1000, transaction.getAmount());
+
+        Assertions.assertEquals(1000, account.getBalance());
+    }
 }
