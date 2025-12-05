@@ -49,4 +49,36 @@ public class TransactionManagerTest {
 
         Assertions.assertEquals(expected, actual);
     }
+
+    @Test
+    @DisplayName("Should have 0 total withdrawal on initialization")
+    void testTotalWithdrawalsEmpty() {
+        double expected = 0;
+        double actual = transactionManager.calculateTotalWithdrawals("ACC001");
+
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    @DisplayName("Should update total transactions after transacting")
+    void testTransactionTotalAfterTransaction() {
+        Transaction deposit  = new Transaction(
+                TransactionType.DEPOSIT, "ACC001", 1000, 2000);
+        Transaction withdrawal = new Transaction(
+                TransactionType.WITHDRAWAL, "ACC001", 50, 1500);
+        Transaction secondDeposit = new Transaction(
+                TransactionType.WITHDRAWAL, "ACC002", 500, 500);
+
+        transactionManager.addTransaction(deposit);
+        transactionManager.addTransaction(withdrawal);
+        transactionManager.addTransaction(secondDeposit);
+
+        double expectedTotalWithdrawals = 50;
+        double expectedTotalDeposits = 1000;
+        double actualTotalWithdrawals = transactionManager.calculateTotalWithdrawals("ACC001");
+        double actualTotalDeposits = transactionManager.calculateTotalDeposits("ACC001");
+
+        Assertions.assertEquals(expectedTotalWithdrawals, actualTotalWithdrawals);
+        Assertions.assertEquals(expectedTotalDeposits, actualTotalDeposits);
+    }
 }
