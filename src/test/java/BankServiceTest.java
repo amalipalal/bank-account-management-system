@@ -61,4 +61,24 @@ public class BankServiceTest {
         verify(account).withdraw(200);
         verify(transactionManager).addTransaction(withdrawal);
     }
+
+    @Test
+    @DisplayName("Should create a savings account for a customer")
+    void testCreateSavingsAccount() {
+        Customer customer = mock(Customer.class);
+
+        bankingService.createSavingsAccount(customer);
+
+        verify(accountManager).addAccount(any());
+    }
+
+    @Test
+    @DisplayName("Should create a checking account for a customer")
+    void testCreateCheckingAccount() {
+        Customer customer = mock(Customer.class);
+
+        bankingService.createCheckingAccount(customer);
+
+        verify(accountManager).addAccount(any());
+    }
 }
