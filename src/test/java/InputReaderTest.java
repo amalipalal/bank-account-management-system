@@ -43,4 +43,29 @@ public class InputReaderTest {
 
         assertEquals(8, result);
     }
+
+    @Test
+    @DisplayName("Should reject invalid double then accept valid value")
+    void testReadDoubleInvalidThenValid() {
+        Scanner sc = new Scanner("abc\n-5\n3.14\n");
+        inputReader = new InputReader(sc);
+
+        double result = inputReader.readDouble("Enter amount", 0);
+
+        assertEquals(3.14, result);
+    }
+
+    @Test
+    @DisplayName("Should validate non-empty string using validator")
+    void testReadNonEmptyStringValidAfterRetry() {
+        Scanner sc = new Scanner("\nJohn\n");
+        inputReader = new InputReader(sc);
+
+        String result = inputReader.readNonEmptyString(
+                "Enter name",
+                input -> input.isEmpty() ? "Cannot be empty" : null
+        );
+
+        assertEquals("John", result);
+    }
 }
