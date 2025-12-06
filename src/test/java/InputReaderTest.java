@@ -68,4 +68,31 @@ public class InputReaderTest {
 
         assertEquals("John", result);
     }
+    
+    @Test
+    @DisplayName("Should return true when user enters Y")
+    void testReadYesOrNoTrue() {
+        Scanner sc = new Scanner("y\n");
+        inputReader = new InputReader(sc);
+
+        assertTrue(inputReader.readYesOrNo("Continue?"));
+    }
+
+    @Test
+    @DisplayName("Should return false when user enters N")
+    void testReadYesOrNoFalse() {
+        Scanner sc = new Scanner("n\n");
+        inputReader = new InputReader(sc);
+
+        assertFalse(inputReader.readYesOrNo("Continue?"));
+    }
+
+    @Test
+    @DisplayName("Should reject invalid input then accept Y")
+    void testReadYesOrNoInvalidThenValid() {
+        Scanner sc = new Scanner("maybe\nY\n");
+        inputReader = new InputReader(sc);
+
+        assertTrue(inputReader.readYesOrNo("Continue?"));
+    }
 }
