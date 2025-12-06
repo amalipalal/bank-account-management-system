@@ -1,3 +1,5 @@
+package services;
+
 import models.Account;
 import models.CheckingAccount;
 import models.Customer;
@@ -12,9 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import services.AccountManager;
-import services.BankingService;
-import services.TransactionManager;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;

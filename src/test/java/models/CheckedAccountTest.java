@@ -1,18 +1,16 @@
-import models.Customer;
-import models.PremiumCustomer;
-import models.RegularCustomer;
-import models.SavingsAccount;
-import models.exceptions.InsufficientFundsException;
+package models;
+
 import models.exceptions.InvalidAmountException;
+import models.exceptions.OverdraftExceededException;
 import org.junit.jupiter.api.*;
 
-public class SavingsAccountTest {
+public class CheckedAccountTest {
 
     private static Customer regularCustomer;
     private static Customer premiumCustomer;
 
-    private SavingsAccount regularSavings;
-    private SavingsAccount premiumSavings;
+    private CheckingAccount regularChecked;
+    private CheckingAccount premiumChecked;
 
     @BeforeAll
     static void setupCustomers() {
@@ -25,8 +23,8 @@ public class SavingsAccountTest {
         double initialBalance = 1000;
         String accountState = "active";
 
-        regularSavings = new SavingsAccount(regularCustomer, initialBalance, accountState);
-        premiumSavings = new SavingsAccount(premiumCustomer, initialBalance, accountState);
+        regularChecked = new CheckingAccount(regularCustomer, initialBalance, accountState);
+        premiumChecked = new CheckingAccount(premiumCustomer, initialBalance, accountState);
     }
 
     @Test
@@ -35,21 +33,27 @@ public class SavingsAccountTest {
         double withdrawalAmount = -50.49;
 
         Assertions.assertThrows(InvalidAmountException.class, () -> {
-            regularSavings.withdraw(withdrawalAmount);
-            premiumSavings.withdraw(withdrawalAmount);
+            regularChecked.withdraw(withdrawalAmount);
+            premiumChecked.withdraw(withdrawalAmount);
         });
     }
 
     @Test
-    @DisplayName("Should throw InsufficientFundsException for balance < $500")
-    public void enforceMinimumBalance() {
-        double withdrawalAmount = 500.99;
+    @DisplayName("Should throw InsufficientFundsException for balance < -$1000")
+    public void enforceOverdraftLimit() {
+        // Overdraft limit here is $1000 and account has a current balance of $1000
+        double withdrawalAmount = 2000;
 
-        Assertions.assertThrows(InsufficientFundsException.class, () -> {
-            regularSavings.withdraw(withdrawalAmount);
+        // Processing the transaction before overdraft limit has/can be reached
+        Assertions.assertDoesNotThrow(() -> {
+            regularChecked.withdraw(withdrawalAmount);
+            premiumChecked.withdraw(withdrawalAmount);
         });
-        Assertions.assertThrows(InsufficientFundsException.class, () -> {
-            premiumSavings.withdraw(withdrawalAmount);
+
+        // Processing the transaction after overdraft limit has been reached
+        Assertions.assertThrows(OverdraftExceededException.class, () -> {
+            regularChecked.withdraw(withdrawalAmount);
+            premiumChecked.withdraw(withdrawalAmount);
         });
     }
 
@@ -59,13 +63,13 @@ public class SavingsAccountTest {
         double withdrawalAmount = 500;
 
         Assertions.assertDoesNotThrow(() -> {
-            regularSavings.withdraw(withdrawalAmount);
-            premiumSavings.withdraw(withdrawalAmount);
+            regularChecked.withdraw(withdrawalAmount);
+            premiumChecked.withdraw(withdrawalAmount);
         });
 
         double expectedBalance = 500;
-        double actualRegularBalance = regularSavings.getBalance();
-        double actualPremiumBalance = premiumSavings.getBalance();
+        double actualRegularBalance = regularChecked.getBalance();
+        double actualPremiumBalance = premiumChecked.getBalance();
 
         Assertions.assertEquals(expectedBalance, actualRegularBalance);
         Assertions.assertEquals(expectedBalance, actualPremiumBalance);
@@ -77,8 +81,8 @@ public class SavingsAccountTest {
         double depositAmount = -409.56;
 
         Assertions.assertThrows(InvalidAmountException.class, () -> {
-            regularSavings.deposit(depositAmount);
-            premiumSavings.deposit(depositAmount);
+            regularChecked.deposit(depositAmount);
+            premiumChecked.deposit(depositAmount);
         });
     }
 
@@ -88,13 +92,13 @@ public class SavingsAccountTest {
         double depositAmount = 500;
 
         Assertions.assertDoesNotThrow(() -> {
-            regularSavings.deposit(depositAmount);
-            premiumSavings.deposit(depositAmount);
+            regularChecked.deposit(depositAmount);
+            premiumChecked.deposit(depositAmount);
         });
 
         double expectedBalance = 1500;
-        double actualRegularBalance = regularSavings.getBalance();
-        double actualPremiumBalance = premiumSavings.getBalance();
+        double actualRegularBalance = regularChecked.getBalance();
+        double actualPremiumBalance = premiumChecked.getBalance();
 
         Assertions.assertEquals(expectedBalance, actualRegularBalance);
         Assertions.assertEquals(expectedBalance, actualPremiumBalance);

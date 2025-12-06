@@ -1,3 +1,5 @@
+package services;
+
 import models.Account;
 import models.CheckingAccount;
 import models.RegularCustomer;
@@ -6,7 +8,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import services.AccountManager;
 import services.exceptions.AccountNotFoundException;
 
 class AccountManagerTest {
