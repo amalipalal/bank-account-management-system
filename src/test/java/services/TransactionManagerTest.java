@@ -1,10 +1,11 @@
+package services;
+
 import models.Transaction;
 import models.enums.TransactionType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import services.TransactionManager;
 
 public class TransactionManagerTest {
 
