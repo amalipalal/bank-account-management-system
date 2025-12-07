@@ -1,5 +1,5 @@
 public class Main {
     public static void main(String[] args) {
-        TerminalApplication.start();
+        new TerminalApplication().start();
     }
 }

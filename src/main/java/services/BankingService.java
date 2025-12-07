@@ -47,14 +47,14 @@ public class BankingService {
 
     public Account createSavingsAccount(Customer customer) {
         // Account object's initial deposit will be processed as a transaction
-        SavingsAccount newAccount = new SavingsAccount(customer, 0, "active");
+        SavingsAccount newAccount = accountManager.createSavingsAccount(customer, 0);
         accountManager.addAccount(newAccount);
         return newAccount;
     }
 
     public Account createCheckingAccount(Customer customer) {
         // Account object's initial deposit will be processed as a transaction
-        CheckingAccount newAccount = new CheckingAccount(customer, 0, "active");
+        CheckingAccount newAccount = accountManager.createCheckingAccount(customer, 0);
 
         if(customer instanceof PremiumCustomer) newAccount.setMonthlyFee(0);
 
