@@ -1,33 +1,49 @@
 package services;
 
 import config.AppConfig;
+import interfaces.AutoIdGenerator;
 import models.Account;
+import models.CheckingAccount;
+import models.Customer;
+import models.SavingsAccount;
 import services.exceptions.AccountLimitExceededException;
 import services.exceptions.AccountNotFoundException;
-import services.exceptions.InvalidAccountNumberException;
 
 import java.util.Arrays;
 import java.util.Objects;
 
 public class AccountManager {
+    private final AutoIdGenerator idGenerator;
     private final Account[] accounts;
-    private int accountCount;
 
-    public AccountManager() {
+    public AccountManager(AutoIdGenerator idGenerator) {
+        this.idGenerator = idGenerator;
         this.accounts = new Account[AppConfig.MAX_ACCOUNTS];
-        this.accountCount = 0;
+    }
+
+    public SavingsAccount createSavingsAccount(Customer customer, double balance) {
+        String accountNumber = idGenerator.generateId();
+        return new SavingsAccount(accountNumber, customer, balance, "active");
+    }
+
+    public CheckingAccount createCheckingAccount(Customer customer, double balance) {
+        String accountNumber = idGenerator.generateId();
+        return new CheckingAccount(accountNumber, customer, balance, "active");
     }
 
     public void addAccount(Account account) {
+        int accountCount =  this.idGenerator.getCounter();
+
         if(accountCount == accounts.length) {
             throw new AccountLimitExceededException("Cannot add account: maximum number of accounts reached.");
         }
-        accounts[accountCount] = account;
-        accountCount++;
+        // accountCounter is a counter but array is appended
+        // based on zero index
+        accounts[accountCount - 1] = account;
     }
 
     public Account findAccount(String accountNumber) throws AccountNotFoundException {
-        int accountIndex = extractAccountIndex(accountNumber);
+        int accountIndex = this.idGenerator.extractIndex(accountNumber);
         if( accountIndex < 0 || accountIndex >= accounts.length || accounts[accountIndex] == null) {
             throw new AccountNotFoundException("Cannot find account: account doesn't exist");
         }
@@ -35,18 +51,8 @@ public class AccountManager {
         return accounts[accountIndex];
     }
 
-    private int extractAccountIndex(String accountNumber) {
-        int startIndex = accountNumber.length() - 3;
-        String indexString = accountNumber.substring(startIndex);
-
-        try {
-            return Integer.parseInt(indexString) - 1;
-        } catch (NumberFormatException e) {
-            throw new InvalidAccountNumberException("Account number format is invalid: " + accountNumber);
-        }
-    }
-
     public Account[] getAllAccounts() {
+        int accountCount = this.idGenerator.getCounter();
         return Arrays.copyOf(accounts, accountCount);
     }
 
@@ -58,6 +64,6 @@ public class AccountManager {
     }
 
     public int getAccountCount() {
-        return this.accountCount;
+        return this.idGenerator.getCounter();
     }
 }
