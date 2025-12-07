@@ -6,16 +6,24 @@ import services.BankingService;
 import utils.DataSeeder;
 import utils.DisplayUtil;
 import utils.InputReader;
+import utils.id.AccountIdGenerator;
 
 import java.util.Scanner;
 
 public class TerminalApplication {
-    private static final BankingService BANKING_SERVICE = new BankingService(new AccountManager(), new TransactionManager());
-    private static final InputReader INPUT = new InputReader(new Scanner(System.in));
-    private static final AccountFlowHandler ACCOUNT_FLOW = new AccountFlowHandler(BANKING_SERVICE, INPUT);
-    private static final TransactionFlowHandler TRANSACTION_FLOW = new TransactionFlowHandler(BANKING_SERVICE, INPUT);
+    private final BankingService bankingService;
+    private final InputReader input;
+    private final AccountFlowHandler accountFlowHandler;
+    private final TransactionFlowHandler transactionFlowHandler;
 
-    public static void start() {
+    public TerminalApplication() {
+        this.bankingService = new BankingService(new AccountManager(new AccountIdGenerator()), new TransactionManager());
+        this.input = new InputReader(new Scanner(System.in));
+        this.accountFlowHandler = new AccountFlowHandler(bankingService, input);
+        this.transactionFlowHandler = new TransactionFlowHandler(bankingService, input);
+    }
+
+    public void start() {
         // Populate the program with already existing customer accounts
         // defined within seed method
         seedData();
@@ -26,7 +34,7 @@ public class TerminalApplication {
             try {
                 DisplayUtil.displayMainMenu();
 
-                int userSelection = INPUT.readInt("Select an option (1-5)", 1, 5);
+                int userSelection = input.readInt("Select an option (1-5)", 1, 5);
                 System.out.println();
 
                 userIsActive = handleMenuSelection(userSelection);
@@ -37,8 +45,8 @@ public class TerminalApplication {
         }
     }
 
-    public static void seedData() {
-        DataSeeder seeder = new DataSeeder(BANKING_SERVICE);
+    public void seedData() {
+        DataSeeder seeder = new DataSeeder(bankingService);
         try {
             seeder.seed();
         } catch (Exception e) {
@@ -46,19 +54,19 @@ public class TerminalApplication {
         }
     }
 
-    public static boolean handleMenuSelection(int userSelection) {
+    public boolean handleMenuSelection(int userSelection) {
         switch(userSelection) {
             case 1:
-                ACCOUNT_FLOW.handleAccountCreationFlow();
+                accountFlowHandler.handleAccountCreationFlow();
                 break;
             case 2:
-                ACCOUNT_FLOW.handleAccountListingFlow();
+                accountFlowHandler.handleAccountListingFlow();
                 break;
             case 3:
-                TRANSACTION_FLOW.handleTransactionFlow();
+                transactionFlowHandler.handleTransactionFlow();
                 break;
             case 4:
-                TRANSACTION_FLOW.handleTransactionListingFlow();
+                transactionFlowHandler.handleTransactionListingFlow();
                 break;
             case 5:
                 return false;
