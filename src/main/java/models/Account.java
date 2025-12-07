@@ -7,29 +7,16 @@ import models.exceptions.OverdraftExceededException;
 import java.text.DecimalFormat;
 
 public abstract class Account {
-    private static final DecimalFormat FORMATTER = new DecimalFormat("000");
     private final String accountNumber;
     private final Customer customer;
     private double balance;
     private final String status;
-    private static int accountCounter = 0;
 
-    public Account(Customer customer, double balance, String status) {
-        increaseAccountCount();
-
-        this.accountNumber = generateAccountNumber();
+    public Account(String accountNumber, Customer customer, double balance, String status) {
+        this.accountNumber = accountNumber;
         this.customer = customer;
         this.balance = balance;
         this.status = status;
-    }
-
-    private String generateAccountNumber() {
-        String idString = FORMATTER.format(Account.accountCounter);
-        return "ACC" + idString;
-    }
-
-    private void increaseAccountCount() {
-        accountCounter++;
     }
 
     public abstract String displayAccountDetails();
@@ -63,5 +50,4 @@ public abstract class Account {
     public void setBalance(double balance) {
         this.balance = balance;
     }
-
 }

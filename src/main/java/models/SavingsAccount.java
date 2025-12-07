@@ -12,8 +12,8 @@ public class SavingsAccount extends Account implements Transactable {
     private final double INTEREST_RATE = AppConfig.INTEREST_RATE_SAVINGS_ACCOUNT;
     private final double MINIMUM_BALANCE = AppConfig.MINIMUM_INITIAL_DEPOSIT_SAVINGS;
 
-    public SavingsAccount(Customer customer, double balance, String status) {
-        super(customer, balance, status);
+    public SavingsAccount(String accountNumber, Customer customer, double balance, String status) {
+        super(accountNumber, customer, balance, status);
     }
 
     @Override
