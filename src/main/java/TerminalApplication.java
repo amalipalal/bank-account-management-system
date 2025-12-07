@@ -1,4 +1,5 @@
 import handlers.AccountFlowHandler;
+import handlers.TestHandler;
 import handlers.TransactionFlowHandler;
 import services.AccountManager;
 import services.TransactionManager;
@@ -16,6 +17,7 @@ public class TerminalApplication {
     private final InputReader input;
     private final AccountFlowHandler accountFlowHandler;
     private final TransactionFlowHandler transactionFlowHandler;
+    private final TestHandler testHandler;
 
     public TerminalApplication() {
         this.bankingService = new BankingService(
@@ -25,6 +27,7 @@ public class TerminalApplication {
         this.input = new InputReader(new Scanner(System.in));
         this.accountFlowHandler = new AccountFlowHandler(bankingService, input);
         this.transactionFlowHandler = new TransactionFlowHandler(bankingService, input);
+        this.testHandler = new TestHandler();
     }
 
     public void start() {
@@ -38,7 +41,7 @@ public class TerminalApplication {
             try {
                 DisplayUtil.displayMainMenu();
 
-                int userSelection = input.readInt("Select an option (1-5)", 1, 5);
+                int userSelection = input.readInt("Select an option (1-6)", 1, 6);
                 System.out.println();
 
                 userIsActive = handleMenuSelection(userSelection);
@@ -73,6 +76,9 @@ public class TerminalApplication {
                 transactionFlowHandler.handleTransactionListingFlow();
                 break;
             case 5:
+                testHandler.run();
+                break;
+            case 6:
                 return false;
             default:
                 DisplayUtil.displayNotice("Wrong number selection");
