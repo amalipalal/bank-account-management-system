@@ -49,6 +49,9 @@ public abstract class Account {
     }
 
     public void deposit(double amount) {
+        if(amount <= 0) {
+            throw new InvalidAmountException("Deposit amount must be positive and greater than 0");
+        }
         this.balance += amount;
     }
 
