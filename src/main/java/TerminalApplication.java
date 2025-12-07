@@ -7,6 +7,7 @@ import utils.DataSeeder;
 import utils.DisplayUtil;
 import utils.InputReader;
 import utils.id.AccountIdGenerator;
+import utils.id.TransactionIdGenerator;
 
 import java.util.Scanner;
 
@@ -17,7 +18,10 @@ public class TerminalApplication {
     private final TransactionFlowHandler transactionFlowHandler;
 
     public TerminalApplication() {
-        this.bankingService = new BankingService(new AccountManager(new AccountIdGenerator()), new TransactionManager());
+        this.bankingService = new BankingService(
+                new AccountManager(new AccountIdGenerator()),
+                new TransactionManager(new TransactionIdGenerator())
+        );
         this.input = new InputReader(new Scanner(System.in));
         this.accountFlowHandler = new AccountFlowHandler(bankingService, input);
         this.transactionFlowHandler = new TransactionFlowHandler(bankingService, input);
