@@ -1,14 +1,12 @@
 package models;
 
 import config.AppConfig;
-import interfaces.Transactable;
 import models.enums.AccountType;
-import models.enums.TransactionType;
 import models.exceptions.InvalidAmountException;
 import models.exceptions.OverdraftExceededException;
 import utils.DisplayUtil;
 
-public class CheckingAccount extends Account implements Transactable {
+public class CheckingAccount extends Account {
     private final double OVERDRAFT_LIMIT = AppConfig.OVERDRAFT_LIMIT_CHECKING_ACCOUNT;
     private double monthlyFee;
 
@@ -68,24 +66,6 @@ public class CheckingAccount extends Account implements Transactable {
     @Override
     public AccountType getAccountType() {
         return AccountType.CHECKING;
-    }
-
-    @Override
-    public boolean processTransaction(double amount, TransactionType type) throws OverdraftExceededException{
-        if(amount <= 0) return false;
-
-        switch (type) {
-            case TransactionType.DEPOSIT:
-                super.deposit(amount);
-                break;
-            case TransactionType.WITHDRAWAL:
-                withdraw(amount);
-                break;
-            default:
-                return false;
-        }
-
-        return true;
     }
 
     @Override
