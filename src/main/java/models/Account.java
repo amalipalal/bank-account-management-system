@@ -27,7 +27,31 @@ public abstract class Account {
 
     public abstract void withdraw(double amount) throws OverdraftExceededException, InsufficientFundsException;
 
+    @Override
+    public boolean processTransaction(double amount, TransactionType type) throws OverdraftExceededException,
+            InsufficientFundsException {
+        if(amount <= 0) {
+            throw new InvalidAmountException("Transaction amount has to be positive and greater 0");
+        }
+
+        switch (type) {
+            case TransactionType.DEPOSIT:
+                deposit(amount);
+                break;
+            case TransactionType.WITHDRAWAL:
+                withdraw(amount);
+                break;
+            default:
+                return false;
+        }
+
+        return true;
+    }
+
     public void deposit(double amount) {
+        if(amount <= 0) {
+            throw new InvalidAmountException("Deposit amount must be positive and greater than 0");
+        }
         this.balance += amount;
     }
 
