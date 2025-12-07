@@ -21,7 +21,7 @@ public class AccountIdGenerator implements AutoIdGenerator {
     }
 
     @Override
-    public int getAccountCounter() {
+    public int getCounter() {
         return this.accountCounter;
     }
 
